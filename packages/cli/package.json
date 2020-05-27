@@ -1,0 +1,9 @@
+{
+  "name": "@wakfu-tools/cli",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "yargs": "^15.3.1"
+  }
+}

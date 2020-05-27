@@ -1,0 +1,13 @@
+{
+  "name": "@wakfu-tools/lambdas-upload-jobs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true,
+  "arn": "arn:aws:lambda:eu-west-3:427962677004:function:wakfutools_uploadJobs",
+  "dependencies": {
+    "@fabienjuif/dynamo-client": "^2.0.0",
+    "fast-levenshtein": "^2.0.6",
+    "lodash": "^4.17.15"
+  },
+  "workspaceDependencies": {}
+}

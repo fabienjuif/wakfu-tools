@@ -1,0 +1,12 @@
+.subRecipe {
+  margin-left: 2em;
+}
+
+.recipe ul {
+  list-style-type: none;
+}
+
+.done .job,
+.done .ingredients {
+  display: none;
+}

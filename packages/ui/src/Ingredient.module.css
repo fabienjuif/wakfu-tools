@@ -1,0 +1,25 @@
+.ingredient {
+  height: 2em;
+}
+
+.ingredient.done {
+  opacity: 0.4;
+}
+
+.quantity,
+.formula {
+  color: #4f4f4f;
+  font-weight: bold;
+  margin-right: 0.5em;
+  font-size: 1.2em;
+  text-align: right;
+}
+
+.formula {
+  font-weight: normal;
+  font-size: 1em;
+}
+
+.availableQuantity {
+  width: 4em;
+}

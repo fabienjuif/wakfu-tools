@@ -1,0 +1,11 @@
+{
+  "name": "@wakfu-tools/lambdas-set-jobs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true,
+  "arn": "arn:aws:lambda:eu-west-3:427962677004:function:wakfutools_setJobs",
+  "dependencies": {
+    "@fabienjuif/dynamo-client": "^2.0.0"
+  },
+  "workspaceDependencies": {}
+}

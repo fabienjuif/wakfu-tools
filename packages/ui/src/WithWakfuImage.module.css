@@ -1,0 +1,9 @@
+.withWakfuImage {
+  display: flex;
+  align-items: center;
+}
+
+.image {
+  max-width: 3em;
+  border-radius: 100%;
+}
