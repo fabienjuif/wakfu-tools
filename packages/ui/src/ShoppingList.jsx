@@ -35,28 +35,24 @@ export const ShoppingListProvider = ({ children }) => {
     },
     markDone: (uid) => {
       setValue((old) => {
-        const mapIngredient = (ingredient, recipe, forceDone = false) => {
-          const isItem = ingredient.uid === uid
+        const mapItem = (item, factor = 1, forceDone = false) => {
+          const isItem = item.uid === uid
+          const done = item.done || isItem || forceDone
 
           return {
-            ...ingredient,
-            done: ingredient.done || isItem || forceDone,
-            availableQuantity: isItem
-              ? ingredient.quantity * recipe.factor
-              : ingredient.availableQuantity,
-          }
-        }
-
-        const mapRecipe = (recipe, forceDone = false) => {
-          return {
-            ...recipe,
-            done: recipe.done || recipe.uid === uid || forceDone,
-            ingredients: recipe.ingredients.map((ingredient) => ({
-              ...mapIngredient(ingredient, recipe, forceDone),
-              recipe: ingredient.recipe
-                ? mapRecipe(ingredient.recipe, recipe.uid === uid || forceDone)
-                : undefined,
-            })),
+            ...item,
+            done,
+            ingredients: item.ingredients
+              ? item.ingredients.map((ingredient) => ({
+                  ...mapItem(ingredient, item.factor, done),
+                }))
+              : undefined,
+            recipe: item.recipe
+              ? mapItem(item.recipe, item.factor, done)
+              : undefined,
+            availableQuantity: done
+              ? item.quantity * factor
+              : item.availableQuantity,
           }
         }
 
@@ -64,7 +60,7 @@ export const ShoppingListProvider = ({ children }) => {
           ...old,
           recipes: old.recipes
             .map((recipe) =>
-              recipe.uid === uid ? undefined : mapRecipe(recipe, false),
+              recipe.uid === uid ? undefined : mapItem(recipe, 1, false),
             )
             .filter(Boolean),
         }
@@ -120,6 +116,8 @@ export const ShoppingListProvider = ({ children }) => {
           ? getBaseIngredients(ingredient.recipe, ingredient.quantity)
           : {
               ...ingredient,
+              done:
+                ingredient.quantity * quantity <= ingredient.availableQuantity,
               quantity: ingredient.quantity * quantity,
             },
       )
