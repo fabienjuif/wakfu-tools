@@ -1,7 +1,4 @@
 import fetch from 'node-fetch'
-import { createClient } from '@fabienjuif/dynamo-client'
-
-const dynamoClient = createClient()
 
 export const handler = async (event) => {
   // TODO: auth
