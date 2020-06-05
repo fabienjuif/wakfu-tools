@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react'
+import React, { createContext, useState, useContext } from 'react'
 import cn from 'classnames'
 import { nanoid } from 'nanoid'
 import { sortIngredients } from './utils'
@@ -8,6 +8,41 @@ import WakfuImage from './WakfuImage'
 import classes from './ShoppingList.module.css'
 
 const ShoppingListContext = createContext({})
+
+const getBaseIngredients = (recipe, quantity) => {
+  if (recipe.done) return []
+
+  return recipe.ingredients.flatMap((ingredient) =>
+    ingredient.recipe
+      ? getBaseIngredients(ingredient.recipe, ingredient.quantity)
+      : {
+          ...ingredient,
+          done: ingredient.quantity * quantity <= ingredient.availableQuantity,
+          quantity: ingredient.quantity * quantity,
+        },
+  )
+}
+
+const mapWithBaseIngredients = (value) => {
+  const baseIngredients = new Map()
+
+  value.recipes
+    .flatMap((recipe) => getBaseIngredients(recipe, 1))
+    .forEach((ingredient) => {
+      if (baseIngredients.has(ingredient.itemId)) {
+        const old = baseIngredients.get(ingredient.itemId)
+        old.quantity += ingredient.quantity
+        old.availableQuantity += ingredient.availableQuantity
+      } else {
+        baseIngredients.set(ingredient.itemId, { ...ingredient })
+      }
+    })
+
+  return {
+    ...value,
+    baseIngredients: Array.from(baseIngredients.values()),
+  }
+}
 
 export const useShoppingList = () => useContext(ShoppingListContext)
 
@@ -20,18 +55,22 @@ export const ShoppingListProvider = ({ children }) => {
       const mapRecipe = (recipe, factor = 1) => ({
         ...addUID(recipe),
         factor,
+        availableQuantity: 0,
         ingredients: recipe.ingredients.map((ingredient) => ({
           ...addUID(ingredient),
+          availableQuantity: 0,
           recipe: ingredient.recipe
             ? mapRecipe(ingredient.recipe, ingredient.quantity)
             : undefined,
         })),
       })
 
-      setValue((old) => ({
-        ...old,
-        recipes: old.recipes.concat(mapRecipe(recipe)),
-      }))
+      setValue((old) =>
+        mapWithBaseIngredients({
+          ...old,
+          recipes: old.recipes.concat(mapRecipe(recipe)),
+        }),
+      )
     },
     markDone: (uid) => {
       setValue((old) => {
@@ -56,18 +95,18 @@ export const ShoppingListProvider = ({ children }) => {
           }
         }
 
-        return {
+        return mapWithBaseIngredients({
           ...old,
           recipes: old.recipes
             .map((recipe) =>
               recipe.uid === uid ? undefined : mapItem(recipe, 1, false),
             )
             .filter(Boolean),
-        }
+        })
       })
     },
     setAvailableQuantity: (uid, quantity) => {
-      const setAvailableQuantity = (item, forceDone = false) => {
+      const setAvailableQuantity = (item, factor, forceDone = false) => {
         const isItem = uid === item.uid
 
         let done = item.done
@@ -76,8 +115,8 @@ export const ShoppingListProvider = ({ children }) => {
           availableQuantity = item.quantity
           done = true
         } else if (isItem) {
-          availableQuantity = quantity
-          done = item.quantity - quantity <= 0
+          availableQuantity = +quantity
+          done = item.quantity * factor - availableQuantity <= 0
         }
 
         return {
@@ -86,64 +125,33 @@ export const ShoppingListProvider = ({ children }) => {
           done,
           ingredients: item.ingredients
             ? item.ingredients.map((ingredient) =>
-                setAvailableQuantity(ingredient, forceDone || isItem),
+                setAvailableQuantity(
+                  ingredient,
+                  item.factor,
+                  forceDone || isItem,
+                ),
               )
             : undefined,
           recipe: item.recipe
-            ? setAvailableQuantity(item.recipe, forceDone || isItem)
+            ? setAvailableQuantity(
+                item.recipe,
+                item.factor,
+                forceDone || isItem,
+              )
             : undefined,
         }
       }
 
       setValue((old) => {
-        return {
+        return mapWithBaseIngredients({
           ...old,
           recipes: old.recipes
             .map((recipe) => setAvailableQuantity(recipe, false))
             .filter(Boolean),
-        }
+        })
       })
     },
   })
-
-  // this effect listen to recipes and create the base ingredients
-  useEffect(() => {
-    const getBaseIngredients = (recipe, quantity) => {
-      if (recipe.done) return []
-
-      return recipe.ingredients.flatMap((ingredient) =>
-        ingredient.recipe
-          ? getBaseIngredients(ingredient.recipe, ingredient.quantity)
-          : {
-              ...ingredient,
-              done:
-                ingredient.quantity * quantity <= ingredient.availableQuantity,
-              quantity: ingredient.quantity * quantity,
-            },
-      )
-    }
-
-    setValue((old) => ({
-      ...old,
-      baseIngredients: old.recipes
-        .flatMap((recipe) => getBaseIngredients(recipe, 1))
-        .reduce((baseIngredients, ingredient) => {
-          const old = baseIngredients.find(
-            (b) => b.itemId === ingredient.itemId,
-          )
-          if (!old) return [...baseIngredients, { ...ingredient }]
-
-          old.quantity += ingredient.quantity
-          if (ingredient.availableQuantity) {
-            old.availableQuantity =
-              (old.availableQuantity || 0) + ingredient.availableQuantity
-
-            old.done = old.quantity - old.availableQuantity <= 0
-          }
-          return baseIngredients
-        }, []),
-    }))
-  }, [value.recipes])
 
   return (
     <ShoppingListContext.Provider value={value}>
@@ -168,7 +176,8 @@ const ShoppingList = () => {
         {sortIngredients(baseIngredients).map((ingredient) => (
           <Ingredient
             {...ingredient}
-            quantity={ingredient.quantity - (ingredient.availableQuantity || 0)}
+            quantity={ingredient.quantity - ingredient.availableQuantity}
+            key={ingredient.itemId}
           />
         ))}
       </div>
