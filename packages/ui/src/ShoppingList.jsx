@@ -1,4 +1,10 @@
-import React, { createContext, useState, useContext } from 'react'
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useRef,
+} from 'react'
 import cn from 'classnames'
 import { nanoid } from 'nanoid'
 import { sortIngredients } from './utils'
@@ -152,6 +158,29 @@ export const ShoppingListProvider = ({ children }) => {
       })
     },
   })
+
+  // save into and load from localStorage
+  const recipesInitialized = useRef(false)
+  useEffect(() => {
+    const key = 'wakfutools_shoppinglist_recipes'
+
+    // load
+    if (!recipesInitialized.current) {
+      recipesInitialized.current = true
+
+      setValue((old) =>
+        mapWithBaseIngredients({
+          ...old,
+          recipes: JSON.parse(window.localStorage.getItem(key) || '[]'),
+        }),
+      )
+
+      return
+    }
+
+    // save
+    window.localStorage.setItem(key, JSON.stringify(value.recipes))
+  }, [value.recipes])
 
   return (
     <ShoppingListContext.Provider value={value}>
