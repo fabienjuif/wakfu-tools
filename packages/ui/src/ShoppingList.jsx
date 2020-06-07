@@ -6,6 +6,7 @@ import React, {
   useRef,
 } from 'react'
 import cn from 'classnames'
+import { MdClose } from 'react-icons/md'
 import { nanoid } from 'nanoid'
 import { sortIngredients } from './utils'
 import Recipe from './Recipe'
@@ -190,12 +191,15 @@ export const ShoppingListProvider = ({ children }) => {
 }
 
 const ShoppingList = () => {
-  const { recipes, baseIngredients } = useShoppingList()
+  const { recipes, baseIngredients, markDone } = useShoppingList()
 
   return (
     <div className={cn('shoppingList', classes.shoppingList)}>
       {recipes.map((recipe) => (
         <div key={recipe.id} className={cn('recipe', classes.recipe)}>
+          <button onClick={() => markDone(recipe.uid)}>
+            <MdClose />
+          </button>
           <WakfuImage {...recipe.item} />
           <Recipe {...recipe} shopping />
         </div>
