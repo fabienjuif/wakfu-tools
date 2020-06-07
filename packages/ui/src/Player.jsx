@@ -1,10 +1,11 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import cn from 'classnames'
 import { uploadJobs, sortJobs } from './jobs'
+import Card from './Card'
 import Job from './Job'
 import classes from './Player.module.css'
 
-const Player = ({ id, pseudo, jobs, jobFilter, recipeFilter }) => {
+const Player = ({ id, pseudo, jobs, jobFilter }) => {
   const [error, setError] = useState()
   const [innerJobs, setInnerJobs] = useState([])
   const [shouldSave, setShouldSave] = useState(false)
@@ -50,7 +51,7 @@ const Player = ({ id, pseudo, jobs, jobFilter, recipeFilter }) => {
   }, [id, innerJobs])
 
   return (
-    <div className={cn('player', classes.player)}>
+    <Card className={cn('player', classes.player)}>
       {error && <pre>{JSON.stringify(error, null, 2)}</pre>}
 
       {pseudo}
@@ -72,12 +73,11 @@ const Player = ({ id, pseudo, jobs, jobFilter, recipeFilter }) => {
             {...job}
             key={job.code}
             jobFilter={jobFilter}
-            recipeFilter={recipeFilter}
             onChange={jobLvlChange}
           />
         ))}
       </div>
-    </div>
+    </Card>
   )
 }
 

@@ -9,8 +9,11 @@ import cn from 'classnames'
 import { MdClose } from 'react-icons/md'
 import { nanoid } from 'nanoid'
 import { sortIngredients } from './utils'
+import Card from './Card'
+import Button from './Button'
 import Recipe from './Recipe'
 import Ingredient from './Ingredient'
+import Items from './Items'
 import WakfuImage from './WakfuImage'
 import classes from './ShoppingList.module.css'
 
@@ -195,15 +198,7 @@ const ShoppingList = () => {
 
   return (
     <div className={cn('shoppingList', classes.shoppingList)}>
-      {recipes.map((recipe) => (
-        <div key={recipe.id} className={cn('recipe', classes.recipe)}>
-          <button onClick={() => markDone(recipe.uid)}>
-            <MdClose />
-          </button>
-          <WakfuImage {...recipe.item} />
-          <Recipe {...recipe} shopping />
-        </div>
-      ))}
+      <Items />
 
       <div className={cn('baseIngredients', classes.baseIngredients)}>
         {sortIngredients(baseIngredients).map((ingredient) => (
@@ -212,6 +207,21 @@ const ShoppingList = () => {
             quantity={ingredient.quantity - ingredient.availableQuantity}
             key={ingredient.itemId}
           />
+        ))}
+      </div>
+
+      <div className={cn('crafts', classes.crafts)}>
+        {recipes.map((recipe) => (
+          <Card key={recipe.id} className={cn('recipe', classes.recipe)}>
+            <Button
+              onClick={() => markDone(recipe.uid)}
+              className={cn('closeBtn', classes.closeBtn)}
+            >
+              <MdClose />
+            </Button>
+            <WakfuImage {...recipe.item} />
+            <Recipe {...recipe} shopping />
+          </Card>
         ))}
       </div>
     </div>

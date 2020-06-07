@@ -2,8 +2,18 @@
   display: flex;
 }
 
-.recipe {
-  padding: 2em;
-  border-radius: 5px;
-  box-shadow: 0px 0px 10px -8px;
+.recipe > .closeBtn {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+}
+
+.baseIngredients {
+  flex-shrink: 0;
+  margin-right: 2em;
+}
+
+.crafts {
+  display: flex;
+  flex-wrap: wrap;
 }

@@ -1,0 +1,5 @@
+.screen {
+  display: flex;
+  padding: 2em;
+  margin-left: calc(10em + 4em);
+}

@@ -1,17 +1,21 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { WakfuAPIProvider } from './Api'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 
+import 'normalize.css'
+import './index.css'
+
 ReactDOM.render(
   <React.StrictMode>
-    <WakfuAPIProvider>
-      <App />
-    </WakfuAPIProvider>
+    <App />
   </React.StrictMode>,
   document.getElementById('root'),
 )
+
+if (module.hot) {
+  module.hot.accept()
+}
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

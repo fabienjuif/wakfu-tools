@@ -3,7 +3,7 @@ import cn from 'classnames'
 import { normalizeStr } from './utils'
 import classes from './Job.module.css'
 
-const Job = ({ code, jobFilter, recipeFilter, lvl, onChange }) => {
+const Job = ({ code, jobFilter, lvl, onChange }) => {
   const inputRef = useRef()
   const innerOnChange = useCallback(
     (e) => {
@@ -18,27 +18,17 @@ const Job = ({ code, jobFilter, recipeFilter, lvl, onChange }) => {
     }
   }, [lvl])
 
-  const sameJob =
-    (!jobFilter && !recipeFilter) ||
-    normalizeStr(code).includes(jobFilter) ||
-    (recipeFilter && code === recipeFilter.category.title.fr)
+  const sameJob = !jobFilter || normalizeStr(code).includes(jobFilter)
 
   return (
     <div
       key={code}
       className={cn('job', classes.job, {
-        [classes.filter]: jobFilter || recipeFilter,
+        [classes.filter]: jobFilter,
         [classes.show]: sameJob,
-        [classes.underLevel]:
-          recipeFilter && (!lvl || recipeFilter.level > lvl),
-        [classes.overLevel]: recipeFilter && recipeFilter.level <= lvl,
       })}
     >
       <div>{code}</div>
-      {sameJob &&
-        recipeFilter &&
-        recipeFilter.level <= lvl &&
-        recipeFilter.level > lvl - 19 && <div>+XP</div>}
       <input
         ref={inputRef}
         className={cn('lvl', classes.lvl)}

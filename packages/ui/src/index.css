@@ -1,0 +1,7 @@
+:root {
+  --transition: 200ms ease-in-out;
+}
+
+#root {
+  display: flex;
+}
