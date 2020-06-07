@@ -1,3 +1,21 @@
 .item {
   height: 3em;
 }
+
+.filter {
+  margin-bottom: 2em;
+}
+
+.panel {
+  position: absolute;
+  padding: 2em 4em;
+  top: 5em;
+  right: 0;
+  left: 0em;
+  bottom: 0;
+  width: calc(100% - 8em);
+  height: 100%;
+  z-index: 10;
+  box-shadow: 0 10px 10px -8px #8f8f8f;
+  background-color: white;
+}

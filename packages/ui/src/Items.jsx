@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react'
 import cn from 'classnames'
 import { normalizeStr, useDebounceEvent } from './utils'
 import { useWakfuAPI } from './Api'
+import Input from './Input'
 import Recipe from './Recipe'
 import WithWakfuImage from './WithWakfuImage'
 import classes from './Items.module.css'
@@ -50,7 +51,8 @@ const Items = ({ onRecipeFound }) => {
     [jobsItems, recipeCategories, recipeIngredients, recipeResults, recipes],
   )
 
-  const onFilterItemChange = useDebounceEvent(
+  const [inputValue, setInputValue] = useState('')
+  const searchItem = useDebounceEvent(
     (e) => {
       const cleanedInput = normalizeStr(e.target.value)
       if (cleanedInput === '') {
@@ -76,6 +78,13 @@ const Items = ({ onRecipeFound }) => {
     200,
     [getRecipe, jobsItems],
   )
+  const onFilterItemChange = useCallback(
+    (e) => {
+      setInputValue(e.target.value)
+      searchItem(e)
+    },
+    [searchItem],
+  )
 
   const [recipe, setRecipe] = useState()
 
@@ -88,28 +97,42 @@ const Items = ({ onRecipeFound }) => {
     [getRecipe, onRecipeFound],
   )
 
+  const closePanel = useCallback(() => {
+    setInputValue('')
+    setFilteredItems([])
+    setRecipe(undefined)
+  }, [])
+
   return (
-    <div>
-      <input
+    <div className={cn('items', classes.items)}>
+      <Input
         type="text"
         name="filterItem"
-        placeholder="Trouver un item craftable"
+        placeholder="Ajouter un item craftable..."
+        value={inputValue}
         onChange={onFilterItemChange}
+        className={cn('filter', classes.filter)}
       />
-      <ul>
-        {filteredItems.map((item) => (
-          <li
-            key={item.definition ? item.definition.id : 'rest'}
-            onClick={() => onItemClick(item)}
-          >
-            <WithWakfuImage {...item} className={cn('item', classes.item)}>
-              {item.title.fr} {item.definition && ` - ${item.definition.level}`}
-            </WithWakfuImage>
-          </li>
-        ))}
-      </ul>
 
-      {recipe && <Recipe {...recipe} />}
+      {(filteredItems.length > 0 || recipe) && (
+        <div className={cn('panel', classes.panel)}>
+          <ul>
+            {filteredItems.map((item) => (
+              <li
+                key={item.definition ? item.definition.id : 'rest'}
+                onClick={() => onItemClick(item)}
+              >
+                <WithWakfuImage {...item} className={cn('item', classes.item)}>
+                  {item.title.fr}{' '}
+                  {item.definition && ` - ${item.definition.level}`}
+                </WithWakfuImage>
+              </li>
+            ))}
+          </ul>
+
+          {recipe && <Recipe {...recipe} onAdd={closePanel} />}
+        </div>
+      )}
     </div>
   )
 }

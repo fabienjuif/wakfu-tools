@@ -8,7 +8,6 @@ import classes from './Recipe.module.css'
 
 const Recipe = ({
   className,
-  uid,
   item,
   category,
   level,
@@ -17,13 +16,15 @@ const Recipe = ({
   factor = 1,
   shopping,
   hideAdd,
+  onAdd,
   done,
 }) => {
   const { add } = useShoppingList()
 
   const onAddToShoppingList = useCallback(() => {
     add({ item, level, ingredients, category })
-  }, [add, category, ingredients, item, level])
+    if (onAdd) onAdd()
+  }, [add, category, ingredients, item, level, onAdd])
 
   return (
     <div

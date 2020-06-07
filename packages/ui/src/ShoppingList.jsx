@@ -200,29 +200,31 @@ const ShoppingList = () => {
     <div className={cn('shoppingList', classes.shoppingList)}>
       <Items />
 
-      <div className={cn('baseIngredients', classes.baseIngredients)}>
-        {sortIngredients(baseIngredients).map((ingredient) => (
-          <Ingredient
-            {...ingredient}
-            quantity={ingredient.quantity - ingredient.availableQuantity}
-            key={ingredient.itemId}
-          />
-        ))}
-      </div>
+      <div className={cn('savedCrafts', classes.savedCrafts)}>
+        <div className={cn('baseIngredients', classes.baseIngredients)}>
+          {sortIngredients(baseIngredients).map((ingredient) => (
+            <Ingredient
+              {...ingredient}
+              quantity={ingredient.quantity - ingredient.availableQuantity}
+              key={ingredient.itemId}
+            />
+          ))}
+        </div>
 
-      <div className={cn('crafts', classes.crafts)}>
-        {recipes.map((recipe) => (
-          <Card key={recipe.id} className={cn('recipe', classes.recipe)}>
-            <Button
-              onClick={() => markDone(recipe.uid)}
-              className={cn('closeBtn', classes.closeBtn)}
-            >
-              <MdClose />
-            </Button>
-            <WakfuImage {...recipe.item} />
-            <Recipe {...recipe} shopping />
-          </Card>
-        ))}
+        <div className={cn('crafts', classes.crafts)}>
+          {recipes.map((recipe) => (
+            <Card key={recipe.id} className={cn('recipe', classes.recipe)}>
+              <Button
+                onClick={() => markDone(recipe.uid)}
+                className={cn('closeBtn', classes.closeBtn)}
+              >
+                <MdClose />
+              </Button>
+              <WakfuImage {...recipe.item} />
+              <Recipe {...recipe} shopping />
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   )
