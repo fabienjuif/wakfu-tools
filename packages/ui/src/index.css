@@ -5,3 +5,7 @@
 #root {
   display: flex;
 }
+
+#root * {
+  font-family: 'Roboto', 'Arial', sans-serif;
+}
