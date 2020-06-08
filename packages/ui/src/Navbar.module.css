@@ -31,6 +31,7 @@
   transition: all var(--transition);
 }
 
-.item:hover {
+.item:hover,
+.item.selected {
   background-color: #4040407d;
 }

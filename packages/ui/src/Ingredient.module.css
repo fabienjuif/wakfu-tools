@@ -1,5 +1,6 @@
 .ingredient {
   height: 2em;
+  transition: all var(--transition);
 }
 
 .ingredient.done {
@@ -21,5 +22,9 @@
 }
 
 .availableQuantity {
-  width: 4em;
+  width: 3em !important;
+  margin: 0 0.5em;
+  font-size: 0.8em;
+  /* opacity: 0; */
+  transition: all var(--transition);
 }

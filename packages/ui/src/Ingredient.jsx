@@ -1,6 +1,8 @@
 import React, { useCallback } from 'react'
 import cn from 'classnames'
 import { MdReplay, MdCheck } from 'react-icons/md'
+import Input from './Input'
+import Button from './Button'
 import { useShoppingList } from './ShoppingList'
 import WithWakfuImage from './WithWakfuImage'
 import classes from './Ingredient.module.css'
@@ -33,30 +35,38 @@ const Ingredient = ({
       className={cn('ingredient', classes.ingredient, { [classes.done]: done })}
       definition={definition}
       title={title}
-    >
-      {shopping && (
+      prefix={
         <>
-          <button onClick={onDone}>
-            <MdCheck />
-          </button>
-          <button onClick={() => alert('TODO:')}>
-            <MdReplay />
-          </button>
+          {shopping && (
+            <>
+              {availableQuantity >= quantity * factor ? (
+                <Button onClick={() => alert('TODO:')}>
+                  <MdReplay />
+                </Button>
+              ) : (
+                <Button onClick={onDone}>
+                  <MdCheck />
+                </Button>
+              )}
+            </>
+          )}
+          {shopping && (
+            <Input
+              light
+              className={cn('availableQuantity', classes.availableQuantity)}
+              type="number"
+              onChange={onQuantityChange}
+              value={availableQuantity || 0}
+              max={quantity * factor}
+              min={0}
+            />
+          )}
         </>
-      )}
+      }
+    >
       <div className={cn('quantity', classes.quantity)}>
         {quantity * factor}
       </div>
-      {shopping && (
-        <input
-          className={cn('availableQuantity', classes.availableQuantity)}
-          type="number"
-          onChange={onQuantityChange}
-          value={availableQuantity || 0}
-          max={quantity * factor}
-          min={0}
-        />
-      )}
       {factor > 1 && (
         <div className={cn('formula', classes.formula)}>
           {quantity}

@@ -4,6 +4,7 @@ import { MdAddBox } from 'react-icons/md'
 import { sortIngredients } from './utils'
 import { useShoppingList } from './ShoppingList'
 import Ingredient from './Ingredient'
+import WakfuImage from './WakfuImage'
 import classes from './Recipe.module.css'
 
 const Recipe = ({
@@ -32,18 +33,22 @@ const Recipe = ({
         [classes.done]: done,
       })}
     >
-      <div>
-        {hideTitle || item.title.fr}
-        <div className={cn('job', classes.job)}>
-          {category.title.fr}
-          lvl {level}
+      {hideTitle || (
+        <div className={cn('header', classes.header)}>
+          <WakfuImage {...item} />
+          <div>
+            <div className={cn('title', classes.title)}>{item.title.fr}</div>
+            <div className={cn('job', classes.job)}>
+              {category.title.fr} lvl.{level}
+            </div>
+          </div>
+          {shopping || hideAdd || (
+            <button onClick={onAddToShoppingList}>
+              <MdAddBox />
+            </button>
+          )}
         </div>
-        {shopping || hideAdd || (
-          <button onClick={onAddToShoppingList}>
-            <MdAddBox />
-          </button>
-        )}
-      </div>
+      )}
       <ul className={cn('ingredients', classes.ingredients)}>
         {sortIngredients(ingredients).map((ingredient) => (
           <li key={ingredient.definition.id}>

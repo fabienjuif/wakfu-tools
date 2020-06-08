@@ -6,3 +6,21 @@
   box-shadow: inset 2px 2px 10px -8px black;
   width: calc(100% - 4em);
 }
+
+.input[type='number'] {
+  appearance: textfield;
+}
+
+.input[type='number']:hover,
+.input[type='number']:focus {
+  appearance: number-input;
+}
+
+.input.light {
+  box-shadow: none;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  padding: 0.5em 1em;
+  width: inherit;
+  background-color: transparent;
+}

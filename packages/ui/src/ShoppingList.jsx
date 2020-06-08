@@ -14,7 +14,6 @@ import Button from './Button'
 import Recipe from './Recipe'
 import Ingredient from './Ingredient'
 import Items from './Items'
-import WakfuImage from './WakfuImage'
 import classes from './ShoppingList.module.css'
 
 const ShoppingListContext = createContext({})
@@ -220,7 +219,6 @@ const ShoppingList = () => {
               >
                 <MdClose />
               </Button>
-              <WakfuImage {...recipe.item} />
               <Recipe {...recipe} shopping />
             </Card>
           ))}
